@@ -4,7 +4,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
 
-class RegisterSerializer(serializers.ModelSerializer):
+class CreateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
@@ -39,3 +39,19 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class GetUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        exclude = [
+            'password',
+            'last_login',
+            'is_superuser',
+            'is_staff',
+            'is_active',
+            'date_joined',
+            'groups',
+            'user_permissions'
+        ]
