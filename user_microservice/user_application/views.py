@@ -3,8 +3,7 @@ import json
 import requests
 
 from django.contrib.auth.models import User
-from django.http import HttpResponse
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 
 from .serializers import GetUserSerializer, CreateUserSerializer
 from django.conf import settings
@@ -34,7 +33,7 @@ class UserViewSet(
 
     def create(self, request, *args, **kwargs):
         resp = super(UserViewSet, self).create(request, *args, **kwargs)
-        if resp.status_code == 201:
+        if resp.status_code == status.HTTP_201_CREATED:
             token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
             requests.post(
                 f'http://{settings.POSITION_SERVER_ADDRESS}/api/user/',
@@ -47,8 +46,19 @@ class UserViewSet(
         return resp
 
     def destroy(self, request, *args, **kwargs):
-
-        return super(UserViewSet, self).destroy(request, *args, **kwargs)
+        instance_id = self.get_object().id
+        resp = super(UserViewSet, self).destroy(request, *args, **kwargs)
+        print(resp.status_code)
+        if resp.status_code == status.HTTP_204_NO_CONTENT:
+            token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
+            requests.delete(
+                f'http://{settings.POSITION_SERVER_ADDRESS}/api/user/{instance_id}',
+                headers={
+                    'content-type': 'application/json',
+                    "Authorization": f'Bearer {token}'
+                },
+            )
+        return resp
 
     def update(self, request, *args, **kwargs):
 
