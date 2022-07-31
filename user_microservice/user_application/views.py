@@ -19,12 +19,14 @@ class UserViewSet(
     viewsets.ModelViewSet
 ):
     queryset = User.objects.all()
+    lookup_field = 'username'  # default is id
     # permission_classes = [CreateOrIsAuthenticated]
     permission_classes = []
     serializer_classes = {
         'default': GetUserSerializer,
         'create': CreateUserSerializer,
     }
+
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -46,13 +48,12 @@ class UserViewSet(
         return resp
 
     def destroy(self, request, *args, **kwargs):
-        instance_id = self.get_object().id
+        instance_username = self.get_object().username
         resp = super(UserViewSet, self).destroy(request, *args, **kwargs)
-        print(resp.status_code)
         if resp.status_code == status.HTTP_204_NO_CONTENT:
             token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
             requests.delete(
-                f'http://{settings.POSITION_SERVER_ADDRESS}/api/user/{instance_id}',
+                f'http://{settings.POSITION_SERVER_ADDRESS}/api/user/{instance_username}/',
                 headers={
                     'content-type': 'application/json',
                     "Authorization": f'Bearer {token}'
@@ -61,5 +62,16 @@ class UserViewSet(
         return resp
 
     def update(self, request, *args, **kwargs):
-
-        return super(UserViewSet, self).update(request, *args, **kwargs)
+        instance_username = self.get_object().username
+        resp = super(UserViewSet, self).update(request, *args, **kwargs)
+        if resp.status_code == status.HTTP_200_OK:
+            token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
+            requests.put(
+                f'http://{settings.POSITION_SERVER_ADDRESS}/api/user/{instance_username}/',
+                headers={
+                    'content-type': 'application/json',
+                    "Authorization": f'Bearer {token}'
+                },
+                data=json.dumps(request.data)
+            )
+        return resp

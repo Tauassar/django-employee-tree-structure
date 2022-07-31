@@ -22,6 +22,7 @@ class UserViewSet(
     viewsets.ModelViewSet
 ):
     queryset = User.objects.all()
+    lookup_field = 'username'  # default is id
     permission_classes = [AuthServerOrIsAuthenticatedAtAuthServer]
     # permission_classes = []
     serializer_classes = {
