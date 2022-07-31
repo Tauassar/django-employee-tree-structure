@@ -1,12 +1,38 @@
+import json
+
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.template import loader
+from rest_framework import viewsets
+from rest_framework.decorators import action
 
-from positions.models import Node
+from .models import Node
+from .serializers import PositionsNodeSerializer
 
 
 def index(request):
-    # latest_question_list = Node.objects.order_by('-pub_date')[:5]
-    # context = {'latest_question_list': latest_question_list}
-    # return render(request, 'positions/index.html', context)
     return render(request, 'positions/index.html')
+
+
+class PositionNodeViewSet(viewsets.ModelViewSet):
+    queryset = Node.objects.all()
+    serializer_class = PositionsNodeSerializer
+
+    @action(methods=["get"], detail=False)
+    def origins(self, request, *args, **kwargs):
+        queryset = Node.get_origins()
+        serializer = self.get_serializer(queryset, many=True)
+        return HttpResponse(json.dumps(serializer.data))
+
+    @action(methods=["get"], detail=True, name='node-descendants')
+    def descendants(self, request, pk, *args, **kwargs):
+        node = Node.objects.get(id=pk)
+        queryset = Node.get_descendants(node)
+        serializer = self.get_serializer(queryset, many=True)
+        return HttpResponse(json.dumps(serializer.data))
+
+    @action(methods=["get"], detail=True, name='node-ancestors')
+    def ancestors(self, request, pk, *args, **kwargs):
+        node = Node.objects.get(id=pk)
+        queryset = Node.get_ancestors(node)
+        serializer = self.get_serializer(queryset, many=True)
+        return HttpResponse(json.dumps(serializer.data))

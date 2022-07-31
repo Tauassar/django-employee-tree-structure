@@ -49,12 +49,12 @@ class Node(models.Model):
             if self.node_type == self.NodeType.PEOPLE:
                 return f'{self.parent.get_self_name()} - {self.user.username}'
             else:
-                return f'{self.parent.get_self_name()} - {self.org_unit.name}'
+                return f'{self.parent.get_self_name()} - {self.name}'
         except AttributeError:
             if self.node_type == self.NodeType.PEOPLE:
                 return f'{self.user.username}'
             else:
-                return f'{self.org_unit.name}'
+                return f'{self.name}'
 
     @staticmethod
     def get_descendants(node):
