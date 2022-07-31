@@ -71,7 +71,7 @@ class Node(models.Model):
         return chain()
 
     @staticmethod
-    def get_origins():
+    def get_all_tree_origins():
         return Node.objects.filter(parent=None)
 
     @staticmethod
@@ -79,21 +79,14 @@ class Node(models.Model):
         return Node.objects.filter(parent=node)
 
     @staticmethod
-    def delete_node(node):
-        with transaction.atomic():
-            try:
-                Node.objects.filter(parent=node).update(parent=node.parent)
-            except IntegrityError:
-                raise IntegrityError('Failed to update node instance\'s child nodes')
-            node.delete()
+    def bind_child_nodes_to_parent(node):
+        try:
+            Node.objects.filter(parent=node).update(parent=node.parent)
+        except IntegrityError:
+            raise IntegrityError('Failed to update node instance\'s child nodes')
 
     @staticmethod
-    def edit_node_parent(node, new_parent):
+    def delete_node(node):
         with transaction.atomic():
-            try:
-                Node.objects.filter(parent=node).update(parent=node.parent)
-            except IntegrityError:
-                raise IntegrityError('Failed to update node instance\'s child nodes')
-
-            node.parent = new_parent
-            node.save()
+            Node.bind_child_nodes_to_parent(node)
+            node.delete()
