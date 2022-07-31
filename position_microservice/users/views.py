@@ -24,7 +24,6 @@ class UserViewSet(
     queryset = User.objects.all()
     lookup_field = 'username'  # default is id
     permission_classes = [AuthServerOrIsAuthenticatedAtAuthServer]
-    # permission_classes = []
     serializer_classes = {
         'default': GetUserSerializer,
         'create': CreateUserSerializer,
@@ -36,6 +35,4 @@ class UserViewSet(
         return self.serializer_classes['default']
 
     def create(self, request, *args, **kwargs):
-        # print(request.data)
         return super(UserViewSet, self).create(request, *args, **kwargs)
-        # return HttpResponse('OK')

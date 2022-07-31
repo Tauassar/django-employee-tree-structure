@@ -20,13 +20,12 @@ class UserViewSet(
 ):
     queryset = User.objects.all()
     lookup_field = 'username'  # default is id
-    # permission_classes = [CreateOrIsAuthenticated]
-    permission_classes = []
+    permission_classes = [CreateOrIsAuthenticated]
+    # permission_classes = []
     serializer_classes = {
         'default': GetUserSerializer,
         'create': CreateUserSerializer,
     }
-
 
     def get_serializer_class(self):
         if self.action == 'create':

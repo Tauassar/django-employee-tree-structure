@@ -47,14 +47,14 @@ class Node(models.Model):
     def __str__(self):
         try:
             if self.node_type == self.NodeType.PEOPLE:
-                return f'ID {self.id} {self.parent.get_self_name()} - {self.user.username}'
+                return f'ID {self.id} | {self.parent.get_self_name()} - {self.user.username}'
             else:
-                return f'ID {self.id} {self.parent.get_self_name()} - {self.name}'
+                return f'ID {self.id} | {self.parent.get_self_name()} - {self.name}'
         except AttributeError:
             if self.node_type == self.NodeType.PEOPLE:
-                return f'ID {self.id} {self.user.username}'
+                return f'ID {self.id} | {self.user.username}'
             else:
-                return f'ID {self.id} {self.name}'
+                return f'ID {self.id} | {self.name}'
 
     @staticmethod
     def get_descendants(node):
