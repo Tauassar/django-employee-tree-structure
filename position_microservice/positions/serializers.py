@@ -15,3 +15,16 @@ class PositionsNodeSerializer(serializers.ModelSerializer):
             return obj.user.username
         else:
             return ''
+
+
+class PutPositionsNodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Node
+        exclude = ['parent']
+
+
+class MovePositionNodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Node
+        fields = ['parent']
+
