@@ -1,6 +1,4 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
-from rest_framework.relations import SlugRelatedField
 
 from .models import Node
 
@@ -10,4 +8,10 @@ class PositionsNodeSerializer(serializers.ModelSerializer):
         model = Node
         fields = '__all__'
 
-    user = SlugRelatedField(slug_field="username", queryset=User.objects.all())
+    username = serializers.SerializerMethodField("get_username", read_only=True)
+
+    def get_username(self, obj):
+        if obj.node_type == Node.NodeType.PEOPLE:
+            return obj.user.username
+        else:
+            return ''
