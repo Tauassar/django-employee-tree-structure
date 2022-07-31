@@ -1,12 +1,7 @@
 from itertools import chain
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-
-
-class OrganisationalUnitModel(models.Model):
-    name = models.CharField(max_length=150)
 
 
 class Node(models.Model):
@@ -17,9 +12,19 @@ class Node(models.Model):
         PEOPLE = 'PL', _('People')
         ORGANISATION = 'ORG', _('Organisational unit')
 
+    name = models.CharField(
+        max_length=100
+    )
+
+    description = models.TextField(
+        blank=True
+    )
+
     parent = models.ForeignKey(
         'self',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
     node_type = models.CharField(
         choices=NodeType.choices,
@@ -32,12 +37,24 @@ class Node(models.Model):
         null=True,
         blank=True
     )
-    org_unit = models.ForeignKey(
-        OrganisationalUnitModel,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
-    )
+
+    def get_self_name(self):
+        if self.node_type == self.NodeType.PEOPLE:
+            return f'{self.user.username}'
+        else:
+            return f'{self.org_unit.name}'
+
+    def __str__(self):
+        try:
+            if self.node_type == self.NodeType.PEOPLE:
+                return f'{self.parent.get_self_name()} - {self.user.username}'
+            else:
+                return f'{self.parent.get_self_name()} - {self.org_unit.name}'
+        except AttributeError:
+            if self.node_type == self.NodeType.PEOPLE:
+                return f'{self.user.username}'
+            else:
+                return f'{self.org_unit.name}'
 
     @staticmethod
     def get_descendants(node):
@@ -52,3 +69,7 @@ class Node(models.Model):
         if node.parent:
             return chain([node.parent], node.get_ancestors(node.parent))
         return chain()
+
+    @staticmethod
+    def get_origins():
+        return Node.objects.filter(parent=None)

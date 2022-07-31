@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tree structure representation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+
+</head>
+<body>
+<div>
+    <h1>Representing JSON Data in Tree Structure Using jsTree</h1>
+    <!-- Container to show tree views -->
+    <div id="tree-view-container">
+        <!-- Container to show tree view from JSON -->
+        <div class="tree-view-container-item">
+            <h2>Tree View from JSON Content</h2>
+            <!-- Tree View Element -->
+            <div id="tree-view-from-json"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    /**
+     * Check if the page content has been loaded completely.
+     */
+
+    $(function () {
+        /**
+         * Initialize the jsTree instance on the HTML content.
+         * Display the tree view.
+         */
+        $("#tree-view-from-html").jstree();
+        /**
+         * Initialize the jsTree instance to create tree view
+         * out of JSON content.
+         */
+        $("#tree-view-from-json").jstree({
+            core: {
+                /**
+                 * Add the JSON content inside the "data" attribute.
+                 */
+                data: [
+                    {
+                        text: "JSON Node 1",
+                        state: {
+                            opened: true,
+                        },
+                        children: [
+                            {
+                                text: "JSON Node 1.1",
+                            },
+                            {
+                                text: "JSON Node 1.2",
+                            },
+                            {
+                                text: "JSON Node 1.3",
+                            },
+                            {
+                                text: "JSON Node 1.4",
+                            },
+                            {
+                                text: "JSON Node 1.5",
+                            },
+                        ],
+                    },
+                    {
+                        text: "JSON Node 2",
+                        state: {
+                            opened: true,
+                        },
+                        children: [
+                            {
+                                text: "JSON Node 2.1",
+                            },
+                            {
+                                text: "JSON Node 2.2",
+                            },
+                            {
+                                text: "JSON Node 2.3",
+                            },
+                            {
+                                text: "JSON Node 2.4",
+                            },
+                            {
+                                text: "JSON Node 2.5",
+                            },
+                        ],
+                    },
+                ],
+            },
+        });
+    });
+</script>
+</html>
