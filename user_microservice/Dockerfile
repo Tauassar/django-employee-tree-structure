@@ -17,9 +17,10 @@ RUN apt-get update \
 
 #RUN apt-get install -y build-essential libssl-dev libffi-dev python-dev
 
-COPY ./entrypoint /entrypoint
+COPY ../entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
+
 
 COPY user_microservice ${APP_HOME}
 
@@ -29,6 +30,7 @@ COPY user_microservice ${APP_HOME}
 RUN python3 -m pip install -r requirements.txt
 
 RUN chown django:django ${APP_HOME}
+RUN chown django:django ${APP_HOME}/db
 
 USER django
 

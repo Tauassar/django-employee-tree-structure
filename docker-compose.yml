@@ -15,11 +15,11 @@ services:
     <<: *django
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: user_microservice/Dockerfile
     image: django_employee_tree_structure_user_microservice
     container_name: django_employee_tree_structure_user_microservice
-#    volumes:
-#      - ./position_microservice/db/:app/db.sqlite3
+    volumes:
+      - ./position_microservice/db:/app/db
     ports:
       - 8010:8000
 #    command: /start
@@ -28,11 +28,11 @@ services:
     <<: *django
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: position_microservice/Dockerfile
     image: django_employee_tree_structure_position_microservice
     container_name: django_employee_tree_structure_position_microservice
-#    volumes:
-#      - ./position_microservice/db/:app/db.sqlite3
+    volumes:
+      - ./position_microservice/db:/app/db
     ports:
       - 8011:8000
 #    command: /start
