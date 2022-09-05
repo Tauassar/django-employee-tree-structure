@@ -1,0 +1,38 @@
+version: '3.9'
+
+x-base:
+  &django
+  depends_on:
+    - rabbitmq
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - 15673:15672
+
+  django_user_service:
+    <<: *django
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: django_employee_tree_structure_user_microservice
+    container_name: django_employee_tree_structure_user_microservice
+#    volumes:
+#      - ./position_microservice/db/:app/db.sqlite3
+    ports:
+      - 8010:8000
+#    command: /start
+
+  django_position_service:
+    <<: *django
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: django_employee_tree_structure_position_microservice
+    container_name: django_employee_tree_structure_position_microservice
+#    volumes:
+#      - ./position_microservice/db/:app/db.sqlite3
+    ports:
+      - 8011:8000
+#    command: /start
